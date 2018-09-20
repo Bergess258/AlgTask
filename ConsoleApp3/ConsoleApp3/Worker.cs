@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp3
 {
-    class Work
+    class Worker
     {
-        public int time;
-        public string name;
-        public List<int> Cantbe;
+        public List<Work> Jobs;
+        public int TimeLeft;
     }
 }
