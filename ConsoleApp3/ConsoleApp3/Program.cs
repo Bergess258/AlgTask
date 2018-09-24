@@ -30,6 +30,7 @@ namespace ConsoleApp3
                 if (Works[c].time > max) { max = Works[c].time; maxi = c; }
                 c++;
             }
+            Reader.Close();
             c = 0;
             for (int i = 0; i < Works.Count; i++)
                 c += Works[i].time;
@@ -44,7 +45,9 @@ namespace ConsoleApp3
             Works.RemoveAt(maxi);
             Works.Sort();
             for (int i = 0; i < Works.Count; i++)
+            {
                 Works[i].Cantbe = new bool[limit];
+            }
             for(int i = 0; i < Workers.Length; i++)
             {
                 if(Workers[i].TimeLeft<=limit)
@@ -62,7 +65,7 @@ namespace ConsoleApp3
                     {
                         if (Workers[i].TimeLeft < limit)
                         {
-                            int temp = Workers[i].TimeLeft - limit;
+                            int temp = limit-Workers[i].TimeLeft;
                             if (check == false)
                             {
                                 if (ok == true)
@@ -87,10 +90,16 @@ namespace ConsoleApp3
                                 {
                                     if (Works[0].time > temp)
                                     {
+                                        int c1 = limit - Workers[i].TimeLeft;
+                                        for (int te = 0; te < c1; te++)
+                                            if (Works[0].Cantbe[te] != true)
+                                                Works[0].Cantbe[te] = true;
+                                            else
+                                                c1++;
                                         Workers[i].Jobs.Insert(0, new Work() { name = Works[0].name, time = temp });
                                         Works[0].time -= temp;
-                                        for (int te = 0; te < limit - Workers[i].TimeLeft; te++)
-                                            Works[0].Cantbe[te] = true;
+                                        Workers[i].Jobs[0].time -= c1;
+                                        Works[0].time += c1;
                                         if (ok != false) ok = false;
                                         else
                                             check = true;
@@ -102,14 +111,12 @@ namespace ConsoleApp3
                                     }
                                 }
                             }
-                            else
-                            {
-
-                            }
                         }
                     }
                 }
             }
+            foreach(Worker i in Workers)
+            Console.WriteLine(i);
         }
     }
 }

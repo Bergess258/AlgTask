@@ -10,6 +10,17 @@ namespace ConsoleApp3
     {
         public List<Work> Jobs=new List<Work>();
         public int TimeLeft = 0;
-        public string[] schedule;
+        public override string ToString()
+        {
+            int previos = 0;
+            string s = "";
+            for(int i = 0; i < Jobs.Count - 1; i++)
+            {
+                s += Jobs[i].name + "(" + previos + "-" + (Jobs[i].time + previos) + "),";
+                previos += Jobs[i].time;
+            }
+            s += Jobs[Jobs.Count - 1].name + "(" + previos + "-" + (Jobs[Jobs.Count - 1].time + previos) + ")";
+            return s;
+        }
     }
 }
