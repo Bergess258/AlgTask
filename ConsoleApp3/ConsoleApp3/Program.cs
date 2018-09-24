@@ -27,29 +27,27 @@ namespace ConsoleApp3
             for (int i = 0; i < Works.Count; i++)
                 c += Works[i].time;
             c = c / Works.Count + 1;
+            int limit=0;
             if (max > c)
+                limit = max;
+            else
+                limit = c;
+            Workers[0].Jobs.Add(Works[maxi]);
+            Works.RemoveAt(maxi);
+            int numb = 1;
+            while (Works.Count > 0)
             {
-                int limit = max;
-                Workers[0].Jobs.Add(Works[maxi]);
-                Works.RemoveAt(maxi);
-                int numb = 1;
-                while (Works.Count > 0)
+                if (Works[0].time > limit)
                 {
-                    if (Works[0].time > limit)
-                    {
-                        Workers[numb++].Jobs.Add(new Work() { time = limit, name = Works[0].name });
-                        Works[0].time -= limit;
-                        int time = 0;
-                        for(int i = 0; i < Works.Count-1; i++)
-                            time += Works[i].time;
-
-                    }
-                    else
-                        if (Works[0].time == limit) { Workers[numb].Jobs.Add(Works[0]); Works.RemoveAt(0); }
-                    else
+                    Workers[numb].Jobs.Add(new Work() { time = limit, name = Works[0].name });
+                    Works[0].time -= limit;
+                    Workers[numb].TimeLeft = limit;
+                }
+                else
+                    if (Works[0].time == limit) { Workers[numb].Jobs.Add(Works[0]); Works.RemoveAt(0); }
+                else
 
                 }
-            }
         }
     }
 }
