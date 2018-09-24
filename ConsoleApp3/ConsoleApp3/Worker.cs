@@ -8,7 +8,8 @@ namespace ConsoleApp3
 {
     class Worker
     {
-        public List<Work> Jobs;
-        public int TimeLeft;
+        public List<Work> Jobs=new List<Work>();
+        public int TimeLeft = 0;
+        public string[] schedule;
     }
 }
