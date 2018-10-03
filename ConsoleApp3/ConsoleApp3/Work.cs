@@ -11,7 +11,6 @@ namespace ConsoleApp3
     {
         public int time;
         public string name;
-        public bool[] Cantbe;
         public int CompareTo(object obj)
         {
             Work temp = (Work)obj;

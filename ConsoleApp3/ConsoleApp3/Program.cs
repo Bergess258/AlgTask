@@ -18,7 +18,7 @@ namespace ConsoleApp3
                 Workers[i] = new Worker();
             string[] all = new string[1];
             List<Work> Works = new List<Work>();
-            int c = 0, max = 0,maxi=0;
+            int c = 0, max = 0;
             while(true)
             {
                 try
@@ -27,89 +27,35 @@ namespace ConsoleApp3
                 }
                 catch { break; }
                 Works.Add(new Work() { time= Convert.ToInt32(all[1]) ,name=all[0]});
-                if (Works[c].time > max) { max = Works[c].time; maxi = c; }
+                if (Works[c].time > max) max = Works[c].time;
                 c++;
             }
             Reader.Close();
             c = 0;
             for (int i = 0; i < Works.Count; i++)
                 c += Works[i].time;
-            c /=  Workers.Length;
+            int add = c % Workers.Length;
+            c = Convert.ToInt32(Math.Ceiling(1.0*c / countEmp));
             int limit = 0;
             if (max > c)
                 limit = max;
             else
                 limit = c;
-            Workers[0].Jobs.Add(Works[maxi]);
-            Workers[0].TimeLeft = max;
-            Works.RemoveAt(maxi);
-            Works.Sort();
-            for (int i = 0; i < Works.Count; i++)
+            c = 0;
+            for(int i = 0; i < Works.Count; i++)
             {
-                Works[i].Cantbe = new bool[limit];
-            }
-            for(int i = 0; i < Workers.Length; i++)
-            {
-                if(Workers[i].TimeLeft<=limit)
-                for(int a = 0; a < Works.Count; a++)
+                while (Works[i].time > 0)
                 {
-                    if(Workers[i].TimeLeft+Works[a].time<=limit) { Workers[i].TimeLeft += Works[a].time;Workers[i].Jobs.Add(new Work() { name = Works[a].name, time = Works[a].time }); Works.RemoveAt(a);a = -1; }
-                }
-            }
-            while (Works.Count > 0&& Works[0].time > 0)
-            {
-                bool ok = true,check=false;
-                for(int i = 0; i < Workers.Length; i++)
-                {
-                    if (Workers[i].TimeLeft < limit)
+                    if (Workers[c].TimeLeft + Works[i].time <= limit) { Workers[c].TimeLeft += Works[i].time; Workers[c].Jobs.Add(new Work() { name = Works[i].name, time = Works[i].time }); Works[i].time = 0 ;}
+                    else
                     {
-                        int temp = limit-Workers[i].TimeLeft;
-                        if (check == false)
-                        {
-                            if (ok == true)
-                            {
-                                if (Works[0].time > temp)
-                                {
-                                    Workers[i].Jobs.Add(new Work() { name = Works[0].name, time = temp });
-                                    Works[0].time -= temp;
-                                    for (int te = Workers[i].TimeLeft; te < limit; te++)
-                                        Works[0].Cantbe[te] = true;
-                                    if (ok != false) ok = false;
-                                    else
-                                        check = true;
-                                }
-                                else
-                                {
-                                    Workers[i].Jobs.Add(Works[0]);
-                                    Works.RemoveAt(0);
-                                }
-                            }
-                            else
-                            {
-                                if (Works[0].time > temp)
-                                {
-                                    int c1 = limit - Workers[i].TimeLeft;
-                                    for (int te = 0; te < c1; te++)
-                                        if (Works[0].Cantbe[te] != true)
-                                            Works[0].Cantbe[te] = true;
-                                        else
-                                            c1++;
-                                    Workers[i].Jobs.Insert(0, new Work() { name = Works[0].name, time = temp });
-                                    Works[0].time -= temp;
-                                    Workers[i].Jobs[0].time -= c1;
-                                    Works[0].time += c1;
-                                    if (ok != false) ok = false;
-                                    else
-                                        check = true;
-                                }
-                                else
-                                {
-                                    Workers[i].Jobs.Insert(0, Works[0]);
-                                    Works.RemoveAt(0);
-                                }
-                            }
-                        }
+                        int temp = limit - Workers[c].TimeLeft;
+                        Workers[c].TimeLeft = limit;
+                        Works[i].time -= temp;
+                        Workers[c].Jobs.Add(new Work() { name = Works[i].name, time = temp });
                     }
+                    if(Workers[c].TimeLeft==limit)
+                    c++;
                 }
             }
             foreach(Worker i in Workers)
